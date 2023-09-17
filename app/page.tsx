@@ -1,9 +1,17 @@
-import { Hero, Searchbar, CustomFilter, CarCard } from "@/components"
+
+import { Hero, Searchbar, CustomFilter, CarCard, ShowMore } from "@/components"
+import { fuels, yearsOfProduction } from "@/constants"
 import { fetchCars } from "@/utils"
 
-export default async function Home() {
+export default async function Home({ searchParams }: any) {
 
-  const allCars = await fetchCars()
+  const allCars = await fetchCars({
+    manufacturer: searchParams.manufacturer || '',
+    year: searchParams.year || 2022,
+    fuel: searchParams.fuel || '',
+    limit: searchParams.limit || 10,
+    model: searchParams.model || ''
+  })
   console.log(allCars)
 
   const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars
@@ -19,8 +27,8 @@ export default async function Home() {
           <div className="home__filters">
             <Searchbar />
             <div className="home__filter-container">
-              <CustomFilter title="fuel"/>
-              <CustomFilter title="year"/>
+              <CustomFilter options={fuels} title="fuel"/>
+              <CustomFilter options={yearsOfProduction} title="year"/>
             </div>
           </div>
         </div>
@@ -32,6 +40,8 @@ export default async function Home() {
                 <CarCard car={car} />
               ))}
             </div>
+            <ShowMore 
+            pageNumber={(searchParams.limit || 10)/10} isNext={(searchParams.limit || 10) > allCars.length}/>
           </section>
         ) : (<div className="home__error-container">
           <h2 className="text-black text-xl font-bold">Oops, no result</h2>
