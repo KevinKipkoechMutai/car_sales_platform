@@ -1,10 +1,17 @@
 import { CarProps, FilterProps } from "@/types"
+import { config } from "dotenv"
+
+try {
+    config()
+  } catch (error) {
+    console.error("Error loading environment variables:", error)
+  }
 
 export async function fetchCars(filters: FilterProps) {
 
     const { manufacturer, year, model, limit, fuel } = filters
     const headers = {
-        'X-RapidAPI-Key': process.env.RAPID_API_KEY,
+        'X-RapidAPI-Key': process.env.RAPID_API_KEY as string,
 		'X-RapidAPI-Host': 'cars-by-api-ninjas.p.rapidapi.com'
     }
 
